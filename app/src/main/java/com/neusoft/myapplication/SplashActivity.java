@@ -15,7 +15,6 @@ import java.util.TimerTask;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private TextView tv_skip;
     private int i = 4;
 
     @Override
@@ -23,25 +22,26 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        tv_skip = findViewById(R.id.tv_skip);
+        final TextView tv_skip = findViewById(R.id.tv_skip);
 
         Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
                 runOnUiThread(() -> {
-                    if (i-- == 1) {
+                    if (i <= 0) {
                         doFinish(timer);
+                    } else {
+                        SpannableString count = new SpannableString(new Formatter().format("跳过 %ds", i--).toString());
+                        count.setSpan(new ForegroundColorSpan(Color.rgb(247, 57, 63)), 3, 5, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        tv_skip.setText(count);
                     }
-                    SpannableString count = new SpannableString(new Formatter().format("跳过 %ds", i).toString());
-                    count.setSpan(new ForegroundColorSpan(Color.rgb(247, 57, 63)), 3, 5, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    tv_skip.setText(count);
                 });
             }
         };
         timer.schedule(timerTask, 0, 1000);
 
-        tv_skip.setOnClickListener((view)-> doFinish(timer));
+        tv_skip.setOnClickListener((view) -> doFinish(timer));
     }
 
     void doFinish(Timer timer) {
